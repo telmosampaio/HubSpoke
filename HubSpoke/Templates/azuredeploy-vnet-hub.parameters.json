@@ -9,16 +9,16 @@
       "value": "onprem"
     },
     "vnetAddressPrefix": {
-      "value": "192.168.0.0/16"
+      "value": "10.0.0.0/16"
     },
     "subnetNamePrefixes": {
-      "value": [ "web", "data" ]
+      "value": [ "entry-onprem", "entry-azure", "management" ]
     },
     "subnetPrefixes": {
-      "value": [ "192.168.1.0/24", "192.168.2.0/24" ]
+      "value": [ "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0" ]
     },
     "gatewaySubnetPrefix": {
-      "value": "192.168.255.240/27"
+      "value": "10.0.255.240/27"
     },
     "vpnType": {
       "value": "RouteBased" 
