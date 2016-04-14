@@ -68,7 +68,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('vnetName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "tags": {
         "displayName": "VNet"
       },
@@ -92,7 +92,7 @@
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'))]"
       ],
@@ -111,7 +111,7 @@
         "count": "[sub(variables('numberSubnets'),1)]"
       },
       "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex(1)],'-sn')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'),'/subnets/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex()],'-sn')]"
       ],
