@@ -164,10 +164,6 @@
         "type": "securestring"
     }
   },
-  "variables": {
-    "location": "[resourceGroup().location]",
-    "apiVersion": "2016-03-30"
-  },
   "resources": [
     {
       "name": "hubVnetTemplate",
