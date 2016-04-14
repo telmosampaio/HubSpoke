@@ -24,7 +24,7 @@
     "spoke3SubnetPrefixes": { "value": [ "10.3.1.0/24", "10.3.2.0/24", "10.3.3.0/24" ] },
     "spoke3GatewaySubnetPrefix": { "value": "10.3.255.240/27" },
     "vpnType": { "value": "RouteBased" },
-    "uri": { "value": "" },
+    "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
     "vnetTemplate": {"value": "azuredeploy-vnet.json"}
   }
 }
