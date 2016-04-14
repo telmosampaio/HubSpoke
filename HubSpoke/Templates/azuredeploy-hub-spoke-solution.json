@@ -1,0 +1,263 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "mvnet"
+    },
+    "hubVnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "hub",
+      "metadata": {
+        "description": "Hub VNet name"
+      }
+    },
+    "hubVnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/16",
+      "metadata": {
+        "description": "Hub VNet Address prefix"
+      }
+    },
+    "hubSubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "onpremEntry", "azureEntry" ],
+      "metadata": {
+        "description": "Hub subnet name prefixes"
+      }
+    },
+    "hubSubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "192.168.1.0/24", "192.168.2.0/24" ],
+      "metadata": {
+        "description": "Hub subnet address prefixes"
+      }
+    },
+    "hubGatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.255.240/27",
+      "metadata": {
+        "description": "Hub GatewaySubnet Prefix"
+      }
+    },
+    "spoke1VnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "spoke1",
+      "metadata": {
+        "description": "Spoke1 VNet name"
+      }
+    },
+    "spoke1VnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.0.0/16",
+      "metadata": {
+        "description": "Spoke1 VNet Address prefix"
+      }
+    },
+    "spoke1SubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "services", "data" ],
+      "metadata": {
+        "description": "Spoke1 subnet name prefixes"
+      }
+    },
+    "spoke1SubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24" ],
+      "metadata": {
+        "description": "Spoke 1 subnet prefixes"
+      }
+    },
+    "spoke1GatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.255.240/27",
+      "metadata": {
+        "description": "Spoke1 GatewaySubnet Prefix"
+      }
+    },
+    "spoke2VnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "spoke2",
+      "metadata": {
+        "description": "Spoke2 VNet name"
+      }
+    },
+    "spoke2VnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.2.0.0/16",
+      "metadata": {
+        "description": "Spoke2 VNet Address prefix"
+      }
+    },
+    "spoke2SubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "services", "data" ],
+      "metadata": {
+        "description": "Spoke2 subnet name prefixes"
+      }
+    },
+    "spoke2SubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24" ],
+      "metadata": {
+        "description": "Spoke 2 subnet prefixes"
+      }
+    },
+    "spoke2GatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.2.255.240/27",
+      "metadata": {
+        "description": "Spoke2 GatewaySubnet Prefix"
+      }
+    },
+    "spoke3VnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "spoke3",
+      "metadata": {
+        "description": "Spoke3 VNet name"
+      }
+    },
+    "spoke3VnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.0.0/16",
+      "metadata": {
+        "description": "Spoke3 VNet Address prefix"
+      }
+    },
+    "spoke3SubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "services", "data" ],
+      "metadata": {
+        "description": "Spoke3 subnet name prefixes"
+      }
+    },
+    "spoke3SubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "10.3.1.0/24", "10.3.2.0/24", "10.3.3.0/24" ],
+      "metadata": {
+        "description": "Spoke 3 subnet prefixes"
+      }
+    },
+    "spoke3GatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.3.255.240/27",
+      "metadata": {
+        "description": "Spoke3 GatewaySubnet Prefix"
+      }
+    },
+    "vpnType": {
+      "type": "string",
+      "metadata": {
+        "description": "Route based (Dynamic Gateway) or Policy based (Static Gateway)"
+      },
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ]
+    },
+    "uri": {
+        "type": "string"
+    },
+    "vnetTemplate": {
+        "type": "securestring"
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "apiVersion": "2016-03-30"
+  },
+  "resources": [
+    {
+      "name": "hubVnetTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('hubVnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('hubVnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('hubSubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('hubSubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('hubGatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    },
+    {
+      "name": "spoke1VnetTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('spoke1VnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('spoke1VnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('spoke1SubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('spoke1SubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('spoke1GatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    },
+    {
+      "name": "spoke2VnetTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('spoke2VnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('spoke2VnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('spoke2SubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('spoke2SubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('spoke2GatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    },
+    {
+      "name": "spoke3VnetTemplate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('spoke3VnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('spoke3VnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('spoke3SubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('spoke3SubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('spoke3GatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    }
+  ],
+    "outputs": {
+    }
+}

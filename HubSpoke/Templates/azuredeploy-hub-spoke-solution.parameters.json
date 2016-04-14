@@ -1,0 +1,30 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": { "value": "mvnet" },
+    "hubVnetNamePrefix": { "value": "hub" },
+    "hubVnetAddressPrefix": { "value": "192.168.0.0/16" },
+    "hubSubnetNamePrefixes": { "value": [ "onpremEntry", "azureEntry" ] },
+    "hubSubnetPrefixes": { "value": [ "192.168.1.0/24", "192.168.2.0/24" ] },
+    "hubGatewaySubnetPrefix": { "value": "192.168.255.240/27" },
+    "spoke1VnetNamePrefix": { "value": "spoke1" },
+    "spoke1VnetAddressPrefix": { "value": "10.1.0.0/16" },
+    "spoke1SubnetNamePrefixes": { "value": [ "web", "services", "data" ] },
+    "spoke1SubnetPrefixes": { "value": [ "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24" ] },
+    "spoke1GatewaySubnetPrefix": { "value": "10.1.255.240/27" },
+    "spoke2VnetNamePrefix": { "value": "spoke2" },
+    "spoke2VnetAddressPrefix": { "value": "10.2.0.0/16" },
+    "spoke2SubnetNamePrefixes": { "value": [ "web", "services", "data" ] },
+    "spoke2SubnetPrefixes": { "value": [ "10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24" ] },
+    "spoke2GatewaySubnetPrefix": { "value": "10.2.255.240/27" },
+    "spoke3VnetNamePrefix": { "value": "spoke3" },
+    "spoke3VnetAddressPrefix": { "value": "10.3.0.0/16" },
+    "spoke3SubnetNamePrefixes": { "value": [ "web", "services", "data" ] },
+    "spoke3SubnetPrefixes": { "value": [ "10.3.1.0/24", "10.3.2.0/24", "10.3.3.0/24" ] },
+    "spoke3GatewaySubnetPrefix": { "value": "10.3.255.240/27" },
+    "vpnType": { "value": "RouteBased" },
+    "uri": { "value": "" },
+    "vnetTemplate": {"value": "azuredeploy-vnet.json"}
+  }
+}

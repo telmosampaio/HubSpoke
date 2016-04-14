@@ -1,0 +1,600 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Deployment location"
+      }
+    },
+    "vnetNameop": {
+      "type": "string",
+      "defaultValue": "onprem",
+      "metadata": {
+        "description": "On-Prem VNet name"
+      }
+    },
+    "vnetAddressPrefixop": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/16",
+      "metadata": {
+        "description": "On-Prem VNet Address prefix"
+      }
+    },
+    "subnet1Prefixop": {
+      "type": "string",
+      "defaultValue": "192.168.1.0/24",
+      "metadata": {
+        "description": "On-Prem Subnet 1 Prefix"
+      }
+    },
+    "subnet1Nameop": {
+      "type": "string",
+      "defaultValue": "sn1op",
+      "metadata": {
+        "description": "On-Prem Subnet 1 Name"
+      }
+    },
+    "gatewaysubnetop": {
+      "type": "string",
+      "defaultValue": "192.168.255.240/28",
+      "metadata": {
+        "description": "On-Prem GatewaySubnet Prefix"
+      }
+    },
+    "gatewaySubnetNameop": {
+      "type": "string",
+      "defaultValue": "GatewaySubnet",
+      "metadata": {
+        "description": "On-Prem Gateway Subnet"
+      }
+    },
+    "vnetNameaz": {
+      "type": "string",
+      "defaultValue": "azure",
+      "metadata": {
+        "description": "Azure VNet name"
+      }
+    },
+    "vnetAddressPrefixaz": {
+      "type": "string",
+      "defaultValue": "10.0.0.0/8",
+      "metadata": {
+        "description": "Azure VNet Address prefix"
+      }
+    },
+    "subnet1Prefixaz": {
+      "type": "string",
+      "defaultValue": "10.0.1.0/24",
+      "metadata": {
+        "description": "Azure Subnet 1 Prefix"
+      }
+    },
+    "subnet1Nameaz": {
+      "type": "string",
+      "defaultValue": "sn1az",
+      "metadata": {
+        "description": "Azure Subnet 1 Name"
+      }
+    },
+    "subnet2Prefixaz": {
+      "type": "string",
+      "defaultValue": "10.0.2.0/24",
+      "metadata": {
+        "description": "Azure Subnet 2 Prefix"
+      }
+    },
+    "subnet2Nameaz": {
+      "type": "string",
+      "defaultValue": "sn2az",
+      "metadata": {
+        "description": "Azure Subnet 2 Name"
+      }
+    },
+    "gatewaysubnetaz": {
+      "type": "string",
+      "defaultValue": "10.255.255.240/28",
+      "metadata": {
+        "description": "Azure GatewaySubnet Prefix"
+      }
+    },
+    "gatewaySubnetNameaz": {
+      "type": "string",
+      "defaultValue": "GatewaySubnet",
+      "metadata": {
+        "description": "Azure Gateway Subnet"
+      }
+    },
+    "stdStorageNameop": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for standard storage account - on-prem."
+      }
+    },
+    "stdStorageType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_GRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage type."
+      }
+    },
+    "osType": {
+      "type": "string",
+      "defaultValue": "Ubuntu",
+      "allowedValues": [
+        "Windows",
+        "Ubuntu"
+      ],
+      "metadata": {
+        "description": "Type of OS to use for VMs: Windows or Ubuntu."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Username for local admin account." }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Password for local admin account." }
+    }
+  },
+  "variables": {
+    "VMSettings": {
+      "Windows": {
+        "vmSize": "Standard_DS3",
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2012-R2-Datacenter",
+        "version": "latest",
+        "vmName": "vm",
+        "osdisk": "vmosdisk",
+        "nicName": "vmnic",
+        "ipAddress": "10.0.",
+        "avsetName": "vmaset"
+      },
+      "Ubuntu": {
+        "vmSize": "Standard_DS3",
+        "publisher": "Canonical",
+        "offer": "UbuntuServer",
+        "sku": "14.04.2-LTS",
+        "version": "latest",
+        "vmName": "vm",
+        "osdisk": "vmosdisk",
+        "nicName": "vmnic",
+        "ipAddress": "10.0.",
+        "avsetName": "vmaset"
+      }
+    },
+    "location": "[resourceGroup().location]",
+    "vmStorageAccountContainerName": "vhds",
+    "vnetIDop": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vnetNameop'))]",
+    "sn1op": "[concat(variables('vnetIDop'),'/subnets/',parameters('subnet1Nameop'))]",
+    "gwsnop": "[concat(variables('vnetIDop'),'/subnets/',parameters('gatewaySubnetNameop'))]",
+    "vnetIDaz": "[resourceId('Microsoft.Network/virtualNetworks',parameters('vnetNameaz'))]",
+    "sn1az": "[concat(variables('vnetIDaz'),'/subnets/',parameters('subnet1Nameaz'))]",
+    "sn2az": "[concat(variables('vnetIDaz'),'/subnets/',parameters('subnet2Nameaz'))]",
+    "gwsnaz": "[concat(variables('vnetIDaz'),'/subnets/',parameters('gatewaySubnetNameaz'))]",
+    "VMSetting": "[variables('VMSettings')[parameters('osType')]]",
+    "apiVersion": "2015-06-15"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('stdStorageNameop')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "Storage Account - OnPrem"
+      },
+      "properties": {
+        "accountType": "[parameters('stdStorageType')]"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('vnetNameop')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefixop')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnet1Nameop')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet1Prefixop')]"
+            }
+          },
+          {
+            "name": "[parameters('gatewaySubnetNameop')]",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaysubnetop')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[parameters('vnetNameaz')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefixaz')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnet1Nameaz')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet1Prefixaz')]"
+            }
+          },
+          {
+            "name": "[parameters('subnet2Nameaz')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnet2Prefixaz')]"
+            }
+          },
+          {
+            "name": "[parameters('gatewaySubnetNameaz')]",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaysubnetaz')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "opsn1vm1pip",
+      "location": "[variables('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      },
+      "tags": {
+        "displayName": "opVMPIP"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "azsn1vm1pip",
+      "location": "[variables('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      },
+      "tags": {
+        "displayName": "azVNAPIP"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "azsn2vm1pip",
+      "location": "[variables('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      },
+      "tags": {
+        "displayName": "azVMPIP"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('VMSetting').nicName, '1')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "NetworkInterfaces - NIC1"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetNameop'))]",
+        "Microsoft.Network/publicIPAddresses/opsn1vm1pip"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "192.168.1.100",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses','opsn1vm1pip')]"
+              },
+              "subnet": {
+                "id": "[variables('sn1op')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[concat(variables('VMSetting').avsetName,'1')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "AvailabilitySet - OpAvSet"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('VMSetting').vmName,'1')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('VMSetting').nicName, '1')]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('VMSetting').avsetName, '1')]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('stdStorageNameop'))]"
+      ],
+      "tags": {
+        "displayName": "VM - sn1op"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', concat(variables('VMSetting').avsetName,'1'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[variables('VMSetting').vmSize]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('VMSetting').vmName,'1')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('VMSetting').publisher]",
+            "offer": "[variables('VMSetting').offer]",
+            "sku": "[variables('VMSetting').sku]",
+            "version": "[variables('VMSetting').version]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('VMSetting').osdisk,'1')]",
+            "vhd": {
+              "uri": "[concat('http://', parameters('stdStorageNameop'), '.blob.core.windows.net/', variables('vmStorageAccountContainerName'), '/', variables('VMSetting').osdisk,'1','.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMSetting').nicName,'1'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('VMSetting').nicName, '2')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "NetworkInterfaces - NIC2"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetNameaz'))]",
+        "Microsoft.Network/publicIPAddresses/azsn1vm1pip"
+      ],
+      "properties": {
+        "enableIPForwarding": true,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.0.1.100",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses','azsn1vm1pip')]"
+              },
+              "subnet": {
+                "id": "[variables('sn1az')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('VMSetting').nicName, '3')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "NetworkInterfaces - NIC3"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetNameaz'))]"
+      ],
+      "properties": {
+        "enableIPForwarding": true,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.0.2.101",
+              "subnet": {
+                "id": "[variables('sn2az')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[concat(variables('VMSetting').avsetName,'2')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "AvailabilitySet - AzAvSet1"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('VMSetting').vmName,'2')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('VMSetting').nicName, '2')]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('VMSetting').nicName, '3')]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('VMSetting').avsetName, '2')]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('stdStorageNameop'))]"
+      ],
+      "tags": {
+        "displayName": "VM - gwsnop"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', concat(variables('VMSetting').avsetName,'2'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[variables('VMSetting').vmSize]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('VMSetting').vmName,'2')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('VMSetting').publisher]",
+            "offer": "[variables('VMSetting').offer]",
+            "sku": "[variables('VMSetting').sku]",
+            "version": "[variables('VMSetting').version]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('VMSetting').osdisk,'2')]",
+            "vhd": {
+              "uri": "[concat('http://', parameters('stdStorageNameop'), '.blob.core.windows.net/', variables('vmStorageAccountContainerName'), '/', variables('VMSetting').osdisk,'2','.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMSetting').nicName,'2'))]",
+              "properties": { "primary": true }
+            },
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMSetting').nicName,'3'))]",
+              "properties": { "primary": false }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('VMSetting').nicName, '4')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "NetworkInterfaces - NIC4"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetNameaz'))]",
+        "Microsoft.Network/publicIPAddresses/azsn2vm1pip"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "10.0.2.100",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses','azsn2vm1pip')]"
+              },
+              "subnet": {
+                "id": "[variables('sn2az')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[concat(variables('VMSetting').avsetName,'3')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "AvailabilitySet - AzAvSet2"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('VMSetting').vmName,'3')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('VMSetting').nicName, '4')]",
+        "[concat('Microsoft.Compute/availabilitySets/', variables('VMSetting').avsetName, '3')]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('stdStorageNameop'))]"
+      ],
+      "tags": {
+        "displayName": "VM - sn3"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', concat(variables('VMSetting').avsetName,'3'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[variables('VMSetting').vmSize]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('VMSetting').vmName,'3')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('VMSetting').publisher]",
+            "offer": "[variables('VMSetting').offer]",
+            "sku": "[variables('VMSetting').sku]",
+            "version": "[variables('VMSetting').version]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('VMSetting').osdisk,'3')]",
+            "vhd": {
+              "uri": "[concat('http://', parameters('stdStorageNameop'), '.blob.core.windows.net/', variables('vmStorageAccountContainerName'), '/', variables('VMSetting').osdisk,'3','.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('VMSetting').nicName,'4'))]"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

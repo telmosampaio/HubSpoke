@@ -1,0 +1,61 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "East US 2"
+    },
+    "vnetNameop": {
+      "value": "onprem"
+    },
+    "vnetAddressPrefixop": {
+      "value": "192.168.0.0/16"
+    },
+    "subnet1Nameop": {
+      "value": "sn1op"
+    },
+    "subnet1Prefixop": {
+      "value": "192.168.1.0/24"
+    },
+    "gatewaySubnetNameop": {
+      "value": "GatewaySubnet"
+    },
+    "gatewaysubnetop": {
+      "value": "192.168.255.240/28"
+    },
+    "vnetNameaz": {
+      "value": "azure"
+    },
+    "vnetAddressPrefixaz": {
+      "value": "10.0.0.0/16"
+    },
+    "subnet1Nameaz": {
+      "value": "sn1az"
+    },
+    "subnet1Prefixaz": {
+      "value": "10.0.1.0/24"
+    },
+    "subnet2Nameaz": {
+      "value": "sn2az"
+    },
+    "subnet2Prefixaz": {
+      "value": "10.0.2.0/24"
+    },
+    "gatewaySubnetNameaz": {
+      "value": "GatewaySubnet"
+    },
+    "gatewaysubnetaz": {
+      "value": "10.0.255.240/28"
+    },
+
+    "adminUsername": {
+      "value": "adminUser"
+    },
+    "adminPassword": {
+      "value": "adminP@ssw0rd"
+    },
+    "stdStorageNameop": { "value": "udrtesttelmo99" },
+    "stdStorageType": { "value": "Premium_LRS" },
+    "osType": { "value": "Ubuntu" }
+  }
+}

@@ -1,0 +1,183 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "mvnet"
+    },
+    "vnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "hub",
+      "metadata": {
+        "description": "VNet name"
+      }
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/16",
+      "metadata": {
+        "description": "VNet Address prefix"
+      }
+    },
+    "subnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "data" ],
+      "metadata": {
+        "description": "Subnet name prefixes"
+      }
+    },
+    "subnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "192.168.1.0/24", "192.168.2.0/24" ],
+      "metadata": {
+        "description": "Subnet prefixes"
+      }
+    },
+    "gatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.255.240/27",
+      "metadata": {
+        "description": "GatewaySubnet Prefix"
+      }
+    },
+    "vpnType": {
+      "type": "string",
+      "metadata": {
+        "description": "Route based (Dynamic Gateway) or Policy based (Static Gateway)"
+      },
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ]
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "apiVersion": "2016-03-30",
+    "numberSubnets": "[length(parameters('subnetPrefixes'))]",
+    "vnetName": "[concat(parameters('baseName'),'-',parameters('vnetNamePrefix'),'-vnet')]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+    "gwPIPName": "[concat(parameters('baseName'),'-',parameters('vnetNamePrefix'),'-pip')]",
+    "gatewayName": "[concat(parameters('baseName'),'-',parameters('vnetNamePrefix'),'-vpngw')]",
+    "gatewaySubnetRef": "[concat(variables('vnetID'),'/subnets/','GatewaySubnet')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('vnetName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "displayName": "VNet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'))]"
+      ],
+      "tags": {
+        "displayName": "First subnet"
+      },
+      "properties": {
+        "addressPrefix": "[parameters('subnetPrefixes')[0]]"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "copy": {
+        "name": "subnetCount",
+        "count": "[sub(variables('numberSubnets'),1)]"
+      },
+      "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex(1)],'-sn')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'),'/subnets/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex()],'-sn')]"
+      ],
+      "tags": {
+        "displayName": "Remaining subnets"
+      },
+      "properties": {
+        "addressPrefix": "[parameters('subnetPrefixes')[copyindex(1)]]"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('gwPIPName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "Gateway PIP"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      },
+      "tags": {
+        "displayName": "gwPIP"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[variables('gatewayName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('gwPIPName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+      ],
+      "tags": {
+        "displayName": "VPN Gateway"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('gatewaySubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('gwPIPName'))]"
+              }
+            },
+            "name": "vnetGatewayConfig"
+          }
+        ],
+        "gatewayType": "Vpn",
+        "vpnType": "[parameters('vpnType')]",
+        "enableBgp": "false"
+      }
+    }
+  ],
+  "outputs": {
+    "gwPIP": {
+      "type": "string",
+      "value": "[reference(variables('gwPIPName')).ipAddress]"
+    },
+    "vpnResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworkGateways',variables('gatewayName'))]"
+    }
+  }
+}
