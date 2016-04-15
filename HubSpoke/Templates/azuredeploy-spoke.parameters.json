@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "baseName": { "value": "mvnet-spoke1" },
-    "stgAccountNames": { "value": [ ] },
+    "stgAccountNames": { "value": [ "mvnetspoke1s01", "mvnetspoke1s02", "mvnetspoke1s03" ] },
     "stgType": { "value": "Premium_LRS" },
     "spokeVnetNamePrefix": { "value": "dc" },
     "spokeVnetAddressPrefix": { "value": "10.1.0.0/16" },

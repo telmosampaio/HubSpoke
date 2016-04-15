@@ -240,6 +240,10 @@
         "[concat('Microsoft.Resources/deployments/','spokeVnet')]",
         "[concat(parameters('stgAccountNames')[copyindex()],'stg')]"
       ],
+      "copy": {
+        "name": "vmCount",
+        "count": "[variables('numberSubnets')]"
+      },
       "properties": {
         "mode": "Incremental",
         "templateLink": {
