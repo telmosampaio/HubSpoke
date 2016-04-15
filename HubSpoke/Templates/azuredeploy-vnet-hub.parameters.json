@@ -2,26 +2,21 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "baseName": {
-      "value": "mvnet-hub"
-    },
-    "vnetNamePrefix": {
-      "value": "onprem"
-    },
-    "vnetAddressPrefix": {
-      "value": "10.0.0.0/16"
-    },
-    "subnetNamePrefixes": {
-      "value": [ "entry-onprem", "entry-azure", "management" ]
-    },
-    "subnetPrefixes": {
-      "value": [ "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0" ]
-    },
-    "gatewaySubnetPrefix": {
-      "value": "10.0.255.240/27"
-    },
-    "vpnType": {
-      "value": "RouteBased" 
-    }
+    "baseName": { "value": "mvnet-hub" },
+    "spokeVnetNamePrefix": { "value": "dc" },
+    "spokeVnetAddressPrefix": { "value": "10.0.0.0/16" },
+    "spokeSubnetNamePrefixes": { "value": [ "entry-onprem", "entry-azure", "management" ] },
+    "spokeSubnetPrefixes": { "value": [ "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24" ] },
+    "spokeGatewaySubnetPrefix": { "value": "10.0.255.240/27" },
+    "vpnType": { "value": "RouteBased" },
+    "vnet2Location": { "value": "East US 2" },
+    "vnet2Name": { "value": "mvnet-onprem-dc-vnet" },
+    "vnet2AddressPrefix": { "value": "192.168.0.0/16" },
+    "vnet2GWIP": { "value": "40.84.60.99" },
+    "vnet2GatewayId": { "value": "/subscriptions/628dad04-b5d1-4f10-b3a4-dc61d88cf97c/resourceGroups/mvnet-onprem-rg" },
+    "sharedKey": { "value": "123abc" },
+    "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
+    "vnetTemplate": { "value": "azuredeploy-vnet.json" },
+    "connectionTemplate": { "value": "azuredeploy-vpnconnection.json" }
   }
 }

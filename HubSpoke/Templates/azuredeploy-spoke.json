@@ -169,6 +169,17 @@
     }
   ],
   "outputs": {
-
+    "vnetName": {
+      "type": "string",
+      "value": "[reference('spokeVnet').outputs.vnetName.value]"
+    },
+    "gwPIP": {
+      "type": "object",
+      "value": "[reference('spokeVnet').outputs.gwPIP.value]"
+    },
+    "vpnResourceId": {
+      "type": "string",
+      "value": "[reference('spokeVnet').outputs.vpnResourceId.value]"
+    }
   }
 }
