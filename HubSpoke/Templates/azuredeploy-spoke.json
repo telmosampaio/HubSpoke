@@ -6,6 +6,27 @@
       "type": "string",
       "defaultValue": "mvnet"
     },
+    "stgAccountNames": {
+      "type": "array",
+      "metadata": {
+        "description": "Storage account name"
+      }
+    },
+    "stgType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_GRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage type"
+      }
+    },
     "spokeVnetNamePrefix": {
       "type": "string",
       "defaultValue": "spoke1",
@@ -40,6 +61,29 @@
       "metadata": {
         "description": "Spoke1 GatewaySubnet Prefix"
       }
+    },
+    "spokeNVMs": {
+      "type": "array",
+      "defaultValue": [ 3, 3, 3 ]
+    },
+    "osType": {
+      "type": "string",
+      "defaultValue": "Ubuntu",
+      "allowedValues": [
+        "Windows",
+        "Ubuntu"
+      ],
+      "metadata": {
+        "description": "Type of OS to use for VMs: Windows or Ubuntu."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Username for local admin account." }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Password for local admin account." }
     },
     "vpnType": {
       "type": "string",
@@ -102,27 +146,6 @@
         "description": "Shared key (PSK) for IPSec tunnel"
       }
     },
-    "stgAccountNames": {
-      "type": "array",
-      "metadata": {
-        "description": "Storage account name"
-      }
-    },
-    "stgType": {
-      "type": "string",
-      "defaultValue": "Premium_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_ZRS",
-        "Premium_LRS",
-        "Premium_GRS",
-        "Premium_ZRS"
-      ],
-      "metadata": {
-        "description": "Storage type"
-      }
-    },
     "uri": {
       "type": "string"
     },
@@ -131,7 +154,11 @@
     },
     "connectionTemplate": {
       "type": "string"
-    }
+    },
+    "vmsTemplate": {
+      "type": "string"
+    },
+    "vmTemplate": { "type": "string" }
   },
   "variables": {
     "location": "[resourceGroup().location]",
@@ -192,7 +219,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[parameters('stgAccountNames')[copyindex()]]",
+      "name": "[concat(parameters('stgAccountNames')[copyindex()],'stg')]",
       "location": "[variables('location')]",
       "copy": {
         "name": "stgCount",
@@ -203,6 +230,34 @@
       },
       "properties": {
         "accountType": "[parameters('stgType')]"
+      }
+    },
+    {
+      "name": "[concat('vms',copyindex())]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/','spokeVnet')]",
+        "[concat(parameters('stgAccountNames')[copyindex()],'stg')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vmsTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vmNamePrefix": { "value": "[parameters('spokeSubnetNamePrefixes')[copyindex()]]" },
+          "snid": { "value": "[concat(reference('spokeVnet').outputs.vnetResourceId.value,'/subnets/',reference('spokeVnet').outputs.vnetName.value,'/',parameters('baseName'),'-',parameters('spokeSubnetNamePrefixes')[copyindex()],'-sn')]" },
+          "stgAccountNames": { "value": "[parameters('stgAccountNames')]" },
+          "osType": { "value": "[parameters('osType')]" },
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "numberVMs": { "value": "[parameters('spokeNVMs')[copyindex()]]" },
+          "uri": { "value": "[parameters('uri')]" },
+          "vmTemplate": {"value": "[parameters('vmTemplate')]"}
+        }
       }
     }
   ],

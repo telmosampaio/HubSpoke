@@ -6,7 +6,6 @@
     "vmNamePrefix": { "value": "web" },
     "snid": { "value": "/subscriptions/628dad04-b5d1-4f10-b3a4-dc61d88cf97c/resourceGroups/mvnet-spoke1-rg/providers/Microsoft.Network/virtualNetworks/mvnet-spoke1-dc-vnet/subnets/mvnet-spoke1-web-sn" },
     "stgAccountNames": { "value": [ "mvnetspoke1s01", "mvnetspoke1s02", "mvnetspoke1s03" ] },
-    "stgType": { "value": "Premium_LRS" },
     "osType": { "value": "Ubuntu" },
     "adminUsername": { "value": "adminUser" },
     "adminPassword": { "value": "adminP@ssw0rd" },

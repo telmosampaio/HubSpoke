@@ -28,21 +28,6 @@
         "description": "Storage account name"
       }
     },
-    "stgType": {
-      "type": "string",
-      "defaultValue": "Premium_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_ZRS",
-        "Premium_LRS",
-        "Premium_GRS",
-        "Premium_ZRS"
-      ],
-      "metadata": {
-        "description": "Storage type"
-      }
-    },
     "osType": {
       "type": "string",
       "defaultValue": "Ubuntu",
@@ -96,7 +81,7 @@
           "baseName": { "value": "[parameters('baseName')]" },
           "vmNamePrefix": { "value": "[concat(parameters('vmNamePrefix'),copyindex(1))]" },
           "snid": { "value": "[parameters('snid')]" },
-          "stgAccountName": { "value": "[concat(parameters('stgAccountNames')[copyindex()],parameters('vmNamePrefix'),copyindex(1))]" },
+          "stgAccountName": { "value": "[concat(parameters('stgAccountNames')[copyindex()],'stg')]" },
           "osType": { "value": "[parameters('osType')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
           "adminPassword": { "value": "[parameters('adminPassword')]" }
