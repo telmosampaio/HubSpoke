@@ -28,21 +28,6 @@
         "description": "Storage account name"
       }
     },
-    "stgType": {
-      "type": "string",
-      "defaultValue": "Premium_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_GRS",
-        "Standard_ZRS",
-        "Premium_LRS",
-        "Premium_GRS",
-        "Premium_ZRS"
-      ],
-      "metadata": {
-        "description": "Storage type"
-      }
-    },
     "osType": {
       "type": "string",
       "defaultValue": "Ubuntu",
@@ -92,18 +77,6 @@
   "resources": [
     {
       "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[parameters('stgAccountName')]",
-      "location": "[variables('location')]",
-      "tags": {
-        "displayName": "Storage Account - OnPrem"
-      },
-      "properties": {
-        "accountType": "[parameters('stgType')]"
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('vmPIPName')]",
       "location": "[variables('location')]",
@@ -145,7 +118,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('VMSetting').vmName,'1')]",
+      "name": "[concat(variables('vmName'),'1')]",
       "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('vmNICName'))]",

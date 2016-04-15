@@ -102,6 +102,27 @@
         "description": "Shared key (PSK) for IPSec tunnel"
       }
     },
+    "stgAccountNames": {
+      "type": "array",
+      "metadata": {
+        "description": "Storage account name"
+      }
+    },
+    "stgType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_GRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage type"
+      }
+    },
     "uri": {
       "type": "string"
     },
@@ -166,6 +187,22 @@
           "vnet2GatewayId": { "value": "[parameters('vnet2GatewayId')]" },
           "sharedKey": { "value": "[parameters('sharedKey')]" }
         }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('stgAccountNames')[copyindex()]]",
+      "location": "[variables('location')]",
+      "copy": {
+        "name": "stgCount",
+        "count": "[length('stgAccountNames')]"
+      },
+      "tags": {
+        "displayName": "Storage Account"
+      },
+      "properties": {
+        "accountType": "[parameters('stgType')]"
       }
     }
   ],

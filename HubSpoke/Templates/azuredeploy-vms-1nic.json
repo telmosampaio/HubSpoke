@@ -22,8 +22,8 @@
         "description": "Subnet ID for NIC"
       }
     },
-    "stgNamePrefix": {
-      "type": "string",
+    "stgAccountNames": {
+      "type": "array",
       "metadata": {
         "description": "Storage account name"
       }
@@ -79,7 +79,7 @@
   },
   "resources": [
     {
-      "name": "vm",
+      "name": "[concat('vm',copyindex(1))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "copy": {
@@ -96,11 +96,11 @@
           "baseName": { "value": "[parameters('baseName')]" },
           "vmNamePrefix": { "value": "[concat(parameters('vmNamePrefix'),copyindex(1))]" },
           "snid": { "value": "[parameters('snid')]" },
-          "stgAccountName": { "value": "[concat(parameters('stgNamePrefix'),parameters('vmNamePrefix'),copyindex(1),'stg')]" },
+          "stgAccountName": { "value": "[concat(parameters('stgAccountNames')[copyindex()],parameters('vmNamePrefix'),copyindex(1),'stg')]" },
           "stgType": { "value": "[parameters('stgType')]" },
           "osType": { "value": "[parameters('osType')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
-          "adminPassword": {"value": "[parameters('adminPassword')]"}
+          "adminPassword": { "value": "[parameters('adminPassword')]" }
         }
       }
     }

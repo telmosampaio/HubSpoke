@@ -35,8 +35,10 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <None Include="Templates\azuredeploy-spoke.json" />
     <None Include="Templates\azuredeploy-spoke.parameters.json" />
+    <None Include="Templates\azuredeploy-vm-1nic.parameters.json" />
     <None Include="Templates\azuredeploy-vms-1nic.json" />
     <None Include="Templates\azuredeploy-vm-1nic.json" />
+    <None Include="Templates\azuredeploy-vms-1nic.parameters.json" />
     <None Include="Templates\azuredeploy-vnet-onprem.parameters.json" />
     <None Include="Templates\azuredeploy-vnet.json" />
     <None Include="Templates\azuredeploy-vnet.parameters.json" />

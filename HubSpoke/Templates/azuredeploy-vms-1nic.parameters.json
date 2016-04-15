@@ -1,0 +1,17 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": { "value": "mvnet-spoke1" },
+    "vmNamePrefix": { "value": "web" },
+    "snid": { "value": "/subscriptions/628dad04-b5d1-4f10-b3a4-dc61d88cf97c/resourceGroups/mvnet-spoke1-rg/providers/Microsoft.Network/virtualNetworks/mvnet-spoke1-dc-vnet/subnets/mvnet-spoke1-web-sn" },
+    "stgAccountNames": { "value": [ "mvnetspoke1s01", "mvnetspoke1s02", "mvnetspoke1s03" ] },
+    "stgType": { "value": "Premium_LRS" },
+    "osType": { "value": "Ubuntu" },
+    "adminUsername": { "value": "adminUser" },
+    "adminPassword": { "value": "adminP@ssw0rd" },
+    "numberVMs": { "value": 3 },
+    "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
+    "vmTemplate": { "value": "azuredeploy-vm-1nic.json" }
+  }
+}
