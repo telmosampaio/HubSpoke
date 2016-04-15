@@ -175,9 +175,9 @@
       "type": "string",
       "value": "[variables('vnetName')]"
     },
-    "vnetAddressPrefix": {
-      "type": "string",
-      "value": "[parameters('vnetAddressPrefix')]"
+    "gwPIP": {
+      "type": "object",
+      "value": "[reference(variables('gwPIPName'))]"
     },
     "vpnResourceId": {
       "type": "string",
