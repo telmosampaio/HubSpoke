@@ -174,7 +174,7 @@
       "value": "[reference('spokeVnet').outputs.vnetName.value]"
     },
     "gwPIP": {
-      "type": "object",
+      "type": "string",
       "value": "[reference('spokeVnet').outputs.gwPIP.value]"
     },
     "vpnResourceId": {
