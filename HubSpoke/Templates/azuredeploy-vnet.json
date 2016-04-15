@@ -177,7 +177,7 @@
     },
     "gwPIP": {
       "type": "object",
-      "value": "[reference(variables('gwPIPName'))]"
+      "value": "[reference(variables('gwPIPName')).ipAddress]"
     },
     "vpnResourceId": {
       "type": "string",
