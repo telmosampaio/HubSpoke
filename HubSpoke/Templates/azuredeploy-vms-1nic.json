@@ -96,8 +96,7 @@
           "baseName": { "value": "[parameters('baseName')]" },
           "vmNamePrefix": { "value": "[concat(parameters('vmNamePrefix'),copyindex(1))]" },
           "snid": { "value": "[parameters('snid')]" },
-          "stgAccountName": { "value": "[concat(parameters('stgAccountNames')[copyindex()],parameters('vmNamePrefix'),copyindex(1),'stg')]" },
-          "stgType": { "value": "[parameters('stgType')]" },
+          "stgAccountName": { "value": "[concat(parameters('stgAccountNames')[copyindex()],parameters('vmNamePrefix'),copyindex(1))]" },
           "osType": { "value": "[parameters('osType')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
           "adminPassword": { "value": "[parameters('adminPassword')]" }
