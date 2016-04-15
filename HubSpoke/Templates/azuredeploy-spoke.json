@@ -113,7 +113,8 @@
     }
   },
   "variables": {
-    "location": "[resourceGroup().location]"
+    "location": "[resourceGroup().location]",
+    "numberSubnets": "[length(parameters('spokeSubnetNamePrefixes'))]"
   },
   "resources": [
     {

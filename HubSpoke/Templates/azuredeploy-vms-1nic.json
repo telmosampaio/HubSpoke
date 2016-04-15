@@ -1,0 +1,108 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "mvnet",
+      "metadata": {
+        "description": "Base name"
+      }
+    },
+    "vmNamePrefix": {
+      "type": "string",
+      "defaultValue": "vm01",
+      "metadata": {
+        "description": "VM name prefix"
+      }
+    },
+    "snid": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet ID for NIC"
+      }
+    },
+    "stgNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account name"
+      }
+    },
+    "stgType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_GRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage type"
+      }
+    },
+    "osType": {
+      "type": "string",
+      "defaultValue": "Ubuntu",
+      "allowedValues": [
+        "Windows",
+        "Ubuntu"
+      ],
+      "metadata": {
+        "description": "Type of OS to use for VMs: Windows or Ubuntu."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Username for local admin account." }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Password for local admin account." }
+    },
+    "numberVMs": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": { "description": "Number of VMs in subnet." }
+    },
+    "uri": {
+      "type": "string"
+    },
+    "vmTemplate": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "name": "vm",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "copy": {
+        "name": "vmCount",
+        "count": "[parameters('numberVMs')]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vmTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vmNamePrefix": { "value": "[concat(parameters('vmNamePrefix'),copyindex(1))]" },
+          "snid": { "value": "[parameters('snid')]" },
+          "stgAccountName": { "value": "[concat(parameters('stgNamePrefix'),parameters('vmNamePrefix'),copyindex(1),'stg')]" },
+          "stgType": { "value": "[parameters('stgType')]" },
+          "osType": { "value": "[parameters('osType')]" },
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": {"value": "[parameters('adminPassword')]"}
+        }
+      }
+    }
+  ]
+}

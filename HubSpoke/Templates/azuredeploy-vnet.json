@@ -144,7 +144,7 @@
       "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('gwPIPName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]"
+        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'),'/subnets/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[variables('numberSubnets')],'-sn')]"
       ],
       "tags": {
         "displayName": "VPN Gateway"
