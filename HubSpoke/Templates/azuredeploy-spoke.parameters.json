@@ -3,11 +3,17 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "baseName": { "value": "mvnet-spoke1" },
+    "stgAccountNames": { "value": [ ] },
+    "stgType": { "value": "Premium_LRS" },
     "spokeVnetNamePrefix": { "value": "dc" },
     "spokeVnetAddressPrefix": { "value": "10.1.0.0/16" },
-    "spokeSubnetNamePrefixes": {"value": ["web","services","data"]},
+    "spokeSubnetNamePrefixes": { "value": [ "web", "services", "data" ] },
     "spokeSubnetPrefixes": { "value": [ "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24" ] },
     "spokeGatewaySubnetPrefix": { "value": "10.1.255.240/27" },
+    "spokeNVMs": { "value": [ 3, 3, 3 ] },
+    "osType": { "value": "Ubuntu" },
+    "adminUsername": { "value": "adminUser" },
+    "adminPassword": { "value": "adminP@ssw0rd" },
     "vpnType": { "value": "RouteBased" },
     "vnet2Location": { "value": "East US 2" },
     "vnet2Name": { "value": "mvnet-hub-dc-vnet" },
@@ -17,6 +23,8 @@
     "sharedKey": { "value": "123abc" },
     "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
     "vnetTemplate": { "value": "azuredeploy-vnet.json" },
-    "connectionTemplate": { "value": "azuredeploy-vpnconnection.json" }
+    "connectionTemplate": { "value": "azuredeploy-vpnconnection.json" },
+    "vmsTemplate": { "value": "azuredeploy-vms-1nic.json" },
+    "vmTemplate": { "value": "azuredeploy-vm-1nic.json" }
   }
 }
