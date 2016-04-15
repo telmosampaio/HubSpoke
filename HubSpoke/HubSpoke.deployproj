@@ -35,6 +35,8 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <None Include="Templates\azuredeploy-hub-spoke-solution.json" />
     <None Include="Templates\azuredeploy-hub-spoke-solution.parameters.json" />
+    <None Include="Templates\azuredeploy-spoke.json" />
+    <None Include="Templates\azuredeploy-spoke.parameters.json" />
     <None Include="Templates\azuredeploy-vnet-onprem.parameters.json" />
     <None Include="Templates\azuredeploy-vnet-hub.parameters.json" />
     <None Include="Templates\azuredeploy-vnet-spoke1.parameters.json" />

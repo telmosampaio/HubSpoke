@@ -2,17 +2,17 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
   "parameters": {
-    "vnet1Location": { "value": "East US 2" },
-    "vnet2Location": { "value": "East US 2" },
     "baseName": { "value": "mvnet" },
+    "vnet1Location": { "value": "East US 2" },
     "vnet1Name": { "value": "mvnet-hub" },
     "vnet1AddressPrefix": { "value": "192.168.0.0/16" },
     "vnet1GWIP": { "value": "40.84.61.173" },
     "vnet1GatewayId": { "value": "xxx" },
+    "vnet2Location": { "value": "East US 2" },
     "vnet2Name": { "value": "mvnet-spoke1" },
     "vnet2AddressPrefix": { "value": "10.1.0.0/16" },
     "vnet2GWIP": { "value": "40.84.61.173" },
     "vnet2GatewayId": { "value": "xxx" },
-    "sharedKey": {"value": "123abc"}
+    "sharedKey": { "value": "123abc" }
   }
 }

@@ -161,7 +161,7 @@
         "type": "string"
     },
     "vnetTemplate": {
-        "type": "securestring"
+      "type": "string"
     }
   },
   "resources": [

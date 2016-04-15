@@ -1,0 +1,174 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "mvnet"
+    },
+    "spokeVnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "spoke1",
+      "metadata": {
+        "description": "Spoke1 VNet name"
+      }
+    },
+    "spokeVnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.0.0/16",
+      "metadata": {
+        "description": "Spoke1 VNet Address prefix"
+      }
+    },
+    "spokeSubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "services", "data" ],
+      "metadata": {
+        "description": "Spoke1 subnet name prefixes"
+      }
+    },
+    "spokeSubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/24" ],
+      "metadata": {
+        "description": "Spoke 1 subnet prefixes"
+      }
+    },
+    "spokeGatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "10.1.255.240/27",
+      "metadata": {
+        "description": "Spoke1 GatewaySubnet Prefix"
+      }
+    },
+    "vpnType": {
+      "type": "string",
+      "metadata": {
+        "description": "Route based (Dynamic Gateway) or Policy based (Static Gateway)"
+      },
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ]
+    },
+    "vnet2Location": {
+      "type": "string",
+      "metadata": {
+        "description": "Deployment location"
+      },
+      "allowedValues": [
+        "East US",
+        "East US 2",
+        "East Asia",
+        "West US",
+        "West Europe",
+        "Southeast Asia",
+        "South Central US",
+        "East US 2",
+        "Japan East",
+        "Japan West",
+        "Central US",
+        "Brazil South"
+      ]
+    },
+    "vnet2Name": {
+      "type": "string",
+      "metadata": {
+        "description": "VNet2 name"
+      }
+    },
+    "vnet2AddressPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "VNet2 Address prefix"
+      }
+    },
+    "vnet2GWIP": {
+      "type": "string",
+      "metadata": {
+        "description": "VNet2 gateway public IP address"
+      }
+    },
+    "vnet2GatewayId": {
+      "type": "string",
+      "metadata": {
+        "description": "VNet2 gateway resource id"
+      }
+    },
+    "sharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Shared key (PSK) for IPSec tunnel"
+      }
+    },
+    "uri": {
+      "type": "string"
+    },
+    "vnetTemplate": {
+      "type": "string"
+    },
+    "connectionTemplate": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "name": "spokeVnet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('spokeVnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('spokeVnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('spokeSubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('spokeSubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('spokeGatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    },
+    {
+      "name": "spokeConnection",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/','spokeVnet')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('connectionTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnet1Location": { "value": "[variables('location')]" },
+          "vnet1Name": { "value": "[reference('spokeVnet').outputs.vnetName.value]" },
+          "vnet1AddressPrefix": { "value": "[parameters('spokeVnetAddressPrefix')]" },
+          "vnet1GWIP": { "value": "[reference('spokeVnet').outputs.gwPIP.value]" },
+          "vnet1GatewayId": { "value": "[reference('spokeVnet').outputs.vpnResourceId.value]" },
+          "vnet2Location": { "value": "[parameters('vnet2Location')]" },
+          "vnet2Name": { "value": "[parameters('vnet2Name')]" },
+          "vnet2AddressPrefix": { "value": "[parameters('vnet2AddressPrefix')]" },
+          "vnet2GWIP": { "value": "[parameters('vnet2GWIP')]" },
+          "vnet2GatewayId": { "value": "[parameters('vnet2GatewayId')]" },
+          "sharedKey": { "value": "[parameters('sharedKey')]" }
+        }
+      }
+    }
+  ],
+  "outputs": {
+
+  }
+}

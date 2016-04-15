@@ -171,6 +171,10 @@
     }
   ],
   "outputs": {
+    "vnetName": {
+      "type": "string",
+      "value": "[variables('vnetName')]"
+    },
     "gwPIP": {
       "type": "string",
       "value": "[reference(variables('gwPIPName')).ipAddress]"

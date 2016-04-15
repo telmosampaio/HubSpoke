@@ -115,6 +115,9 @@
       "type": "Microsoft.Network/localNetworkGateways",
       "name": "[variables('vnet1LocalGWName')]",
       "location": "[parameters('vnet1Location')]",
+      "tags": {
+        "displayName": "Local gateway for vnet2"
+      },
       "properties": {
         "localNetworkAddressSpace": {
           "addressPrefixes": [
@@ -129,6 +132,9 @@
       "type": "Microsoft.Network/localNetworkGateways",
       "name": "[variables('vnet2LocalGWName')]",
       "location": "[parameters('vnet2Location')]",
+      "tags": {
+        "displayName": "Local gateway for vnet1"
+      },
       "properties": {
         "localNetworkAddressSpace": {
           "addressPrefixes": [
@@ -143,6 +149,9 @@
       "name": "[variables('vnet1ConnName')]",
       "type": "Microsoft.Network/connections",
       "location": "[parameters('vnet1Location')]",
+      "tags": {
+        "displayName": "Connection to vnet2"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/localNetworkGateways/', variables('vnet1LocalGWName'))]"
       ],
@@ -163,6 +172,9 @@
       "name": "[concat(parameters('baseName'),'-',parameters('vnet1Name'),'-vpnconn')]",
       "type": "Microsoft.Network/connections",
       "location": "[parameters('vnet2Location')]",
+      "tags": {
+        "displayName": "Connection to vnet1"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/localNetworkGateways/', variables('vnet2LocalGWName'))]"
       ],
