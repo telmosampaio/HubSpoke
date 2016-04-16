@@ -166,7 +166,7 @@
   },
   "resources": [
     {
-      "name": "[concat('spokeVnet',uniqueString(subscription().subscriptionId))]",
+      "name": "spokeVnet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [ ],
@@ -188,7 +188,7 @@
       }
     },
     {
-      "name": "[concat('spokeConnection',uniqueString(subscription().subscriptionId))]",
+      "name": "spokeConnection",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -233,7 +233,7 @@
       }
     },
     {
-      "name": "[concat('vms',uniqueString(subscription().subscriptionId))]",
+      "name": "vms",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
