@@ -166,7 +166,7 @@
   },
   "resources": [
     {
-      "name": "spokeVnet",
+      "name": "[concat('spokeVnet',uniqueString(subscription().subscriptionId))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [ ],
@@ -188,7 +188,7 @@
       }
     },
     {
-      "name": "spokeConnection",
+      "name": "[concat('spokeConnection',uniqueString(subscription().subscriptionId))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -223,7 +223,7 @@
       "location": "[variables('location')]",
       "copy": {
         "name": "stgCount",
-        "count": "[length('stgAccountNames')]"
+        "count": "[length(parameters('stgAccountNames'))]"
       },
       "tags": {
         "displayName": "Storage Account"
@@ -233,12 +233,12 @@
       }
     },
     {
-      "name": "[concat('vms',copyindex(1))]",
+      "name": "[concat('vms',uniqueString(subscription().subscriptionId))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[concat('Microsoft.Resources/deployments/','spokeVnet')]",
-        "[concat(parameters('stgAccountNames')[copyindex()],'stg')]"
+        "[concat(parameters('stgAccountNames')[sub(variables('numberSubnets'),1)],'stg')]"
       ],
       "copy": {
         "name": "vmCount",
@@ -260,7 +260,7 @@
           "adminPassword": { "value": "[parameters('adminPassword')]" },
           "numberVMs": { "value": "[parameters('spokeNVMs')[copyindex()]]" },
           "uri": { "value": "[parameters('uri')]" },
-          "vmTemplate": {"value": "[parameters('vmTemplate')]"}
+          "vmTemplate": { "value": "[parameters('vmTemplate')]" }
         }
       }
     }
