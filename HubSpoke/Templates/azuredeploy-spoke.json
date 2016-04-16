@@ -233,7 +233,7 @@
       }
     },
     {
-      "name": "[concat('vms',copyindex())]",
+      "name": "[concat('vms',copyindex(1))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
