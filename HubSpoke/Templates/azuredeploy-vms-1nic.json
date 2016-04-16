@@ -64,7 +64,7 @@
   },
   "resources": [
     {
-      "name": "[concat('vm',copyindex(),uniqueString(subscription().subscriptionId))]",
+      "name": "[concat('vm','snid',copyindex())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "copy": {
