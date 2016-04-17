@@ -85,19 +85,19 @@
             }
           },
           {
-            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
+            "name": "[concat(parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
             "properties": {
               "addressPrefix": "[parameters('subnetPrefixes')[0]]"
             }
           },
           {
-            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[1],'-sn')]",
+            "name": "[concat(parameters('baseName'),'-',parameters('subnetNamePrefixes')[1],'-sn')]",
             "properties": {
               "addressPrefix": "[parameters('subnetPrefixes')[1]]"
             }
           },
           {
-            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[2],'-sn')]",
+            "name": "[concat(parameters('baseName'),'-',parameters('subnetNamePrefixes')[2],'-sn')]",
             "properties": {
               "addressPrefix": "[parameters('subnetPrefixes')[2]]"
             }
