@@ -248,7 +248,7 @@
       "apiVersion": "2015-01-01",
       "dependsOn": [
         "[concat('Microsoft.Resources/deployments/','hubVnet')]",
-        "[concat('Microsoft.Storage/storageAccounts',concat(parameters('stgAccountNames')[copyindex()],'stg'))]"
+        "[concat('Microsoft.Storage/storageAccounts/',concat(parameters('stgAccountNames')[copyindex()],'stg'))]"
       ],
       "copy": {
         "name": "vmCount",
@@ -263,9 +263,9 @@
         "parameters": {
           "baseName": { "value": "[parameters('baseName')]" },
           "vmNamePrefix": { "value": "[concat('vna',copyindex())]" },
-          "snid1": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('spokeVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[0],'-sn')]" },
-          "snid2": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('spokeVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[1],'-sn')]" },
-          "snid3": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('spokeVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[2],'-sn')]" },
+          "snid1": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('hubVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[0],'-sn')]" },
+          "snid2": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('hubVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[1],'-sn')]" },
+          "snid3": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('hubVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('hubSubnetNamePrefixes')[2],'-sn')]" },
           "stgAccountName": { "value": "[parameters('stgAccountNames')[copyindex()]]" },
           "osType": { "value": "[parameters('osType')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },

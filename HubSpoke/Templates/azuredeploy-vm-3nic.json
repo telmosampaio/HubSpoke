@@ -102,12 +102,13 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vmNICName'),'-onprem-entry')]",
+      "name": "[concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-onprem-entry','-nic')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "VM NIC - onprem-entry"
       },
-      "properties": {
+      "properties": {        
+        "enableIPForwarding": true,
         "ipConfigurations": [
           {
             "name": "ipconfig1",
@@ -124,12 +125,13 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vmNICName'),'-azure-entry')]",
+      "name": "[concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-azure-entry','-nic')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "VM NIC - azure-entry"
       },
       "properties": {
+        "enableIPForwarding": true,
         "ipConfigurations": [
           {
             "name": "ipconfig1",
@@ -146,7 +148,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vmNICName'),'-mgmt')]",
+      "name": "[concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-mgmt','-nic')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "VM NIC - management"
@@ -177,7 +179,9 @@
       "name": "[concat(variables('vmName'))]",
       "location": "[variables('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('vmNICName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-onprem-entry','-nic'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-azure-entry','-nic'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-mgmt','-nic'))]"
       ],
       "tags": {
         "displayName": "VM"
