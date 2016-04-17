@@ -56,7 +56,6 @@
   "variables": {
     "location": "[resourceGroup().location]",
     "apiVersion": "2016-03-30",
-    "numberSubnets": "[length(parameters('subnetPrefixes'))]",
     "vnetName": "[concat(parameters('baseName'),'-',parameters('vnetNamePrefix'),'-vnet')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
     "gwPIPName": "[concat(parameters('baseName'),'-',parameters('vnetNamePrefix'),'-pip')]",
@@ -84,42 +83,44 @@
             "properties": {
               "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
             }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
+            }
+          },
+          {
+            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetPrefixes')[0]]"
+            }
+          },
+          {
+            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[1],'-sn')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetPrefixes')[1]]"
+            }
+          },
+          {
+            "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[2],'-sn')]",
+            "properties": {
+              "addressPrefix": "[parameters('subnetPrefixes')[2]]"
+            }
           }
         ]
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
-      "location": "[variables('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'))]"
-      ],
-      "tags": {
-        "displayName": "First subnet"
-      },
-      "properties": {
-        "addressPrefix": "[parameters('subnetPrefixes')[0]]"
-      }
-    },
-    {
-      "apiVersion": "[variables('apiVersion')]",
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "copy": {
-        "name": "subnetCount",
-        "count": "[sub(variables('numberSubnets'),1)]"
-      },
-      "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex(1)],'-sn')]",
-      "location": "[variables('location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'),'/subnets/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[copyindex()],'-sn')]"
-      ],
-      "tags": {
-        "displayName": "Remaining subnets"
-      },
-      "properties": {
-        "addressPrefix": "[parameters('subnetPrefixes')[copyindex(1)]]"
       }
     },
     {
@@ -144,7 +145,7 @@
       "location": "[variables('location')]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('gwPIPName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'),'/subnets/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[sub(variables('numberSubnets'),1)],'-sn')]"
+        "[concat('Microsoft.Network/virtualNetworks/',variables('vnetName'))]"
       ],
       "tags": {
         "displayName": "VPN Gateway"
