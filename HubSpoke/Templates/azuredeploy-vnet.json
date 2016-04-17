@@ -85,24 +85,6 @@
             }
           },
           {
-            "name": "GatewaySubnet",
-            "properties": {
-              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
-            }
-          },
-          {
-            "name": "GatewaySubnet",
-            "properties": {
-              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
-            }
-          },
-          {
-            "name": "GatewaySubnet",
-            "properties": {
-              "addressPrefix": "[parameters('gatewaySubnetPrefix')]"
-            }
-          },
-          {
             "name": "[concat(variables('vnetName'),'/',parameters('baseName'),'-',parameters('subnetNamePrefixes')[0],'-sn')]",
             "properties": {
               "addressPrefix": "[parameters('subnetPrefixes')[0]]"
