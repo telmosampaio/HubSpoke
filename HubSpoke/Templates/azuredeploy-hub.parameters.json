@@ -1,0 +1,29 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": { "value": "mvnet-hub" },
+    "stgAccountNames": { "value": [ "mvnethubs01" ] },
+    "stgType": { "value": "Premium_LRS" },
+    "hubVnetNamePrefix": { "value": "dc" },
+    "hubVnetAddressPrefix": { "value": "10.0.0.0/16" },
+    "hubSubnetNamePrefixes": { "value": [ "onprem-entry", "azure-entry", "management" ] },
+    "hubSubnetPrefixes": { "value": [ "10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24" ] },
+    "hubGatewaySubnetPrefix": { "value": "10.0.255.240/27" },
+    "hubNVMs": { "value": 1 },
+    "osType": { "value": "Ubuntu" },
+    "adminUsername": { "value": "adminUser" },
+    "adminPassword": { "value": "adminP@ssw0rd" },
+    "vpnType": { "value": "RouteBased" },
+    "onpremLocation": { "value": "East US 2" },
+    "onpremName": { "value": "mvnet-onprem-dc-vnet" },
+    "onpremAddressPrefix": { "value": "192.168.0.0/16" },
+    "onpremGWIP": { "value": "40.84.60.99" },
+    "onpremGatewayId": { "value": "/subscriptions/628dad04-b5d1-4f10-b3a4-dc61d88cf97c/resourceGroups/mvnet-onprem-rg/providers/Microsoft.Network/virtualNetworkGateways/mvnet-onprem-dc-vpngw" },
+    "sharedKey": { "value": "123abc" },
+    "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
+    "vnetTemplate": { "value": "azuredeploy-vnet.json" },
+    "connectionTemplate": { "value": "azuredeploy-vpnconnection.json" },
+    "vmTemplate": { "value": "azuredeploy-vm-3nic.json" }
+  }
+}

@@ -33,8 +33,11 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
+    <None Include="Templates\azuredeploy-hub.json" />
+    <None Include="Templates\azuredeploy-hub.parameters.json" />
     <None Include="Templates\azuredeploy-spoke.json" />
     <None Include="Templates\azuredeploy-spoke.parameters.json" />
+    <None Include="Templates\azuredeploy-vm-3nic.json" />
     <None Include="Templates\azuredeploy-vm-1nic.parameters.json" />
     <None Include="Templates\azuredeploy-vms-1nic.json" />
     <None Include="Templates\azuredeploy-vm-1nic.json" />
