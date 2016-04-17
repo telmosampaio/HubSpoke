@@ -253,7 +253,7 @@
         "parameters": {
           "baseName": { "value": "[parameters('baseName')]" },
           "vmNamePrefix": { "value": "[parameters('spokeSubnetNamePrefixes')[copyindex()]]" },
-          "snid": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/',resourceGroup().name,'/providers/Microsoft.Network/subnets/',reference('spokeVnet').outputs.vnetName.value,'/',parameters('baseName'),'-',parameters('spokeSubnetNamePrefixes')[copyindex()],'-sn')]" },
+          "snid": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('spokeVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('spokeSubnetNamePrefixes')[copyindex()],'-sn')]" },
           "stgAccountNames": { "value": "[parameters('stgAccountNames')]" },
           "osType": { "value": "[parameters('osType')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
