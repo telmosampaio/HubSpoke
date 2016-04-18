@@ -1,0 +1,201 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "mvnet-onprem"
+    },
+    "stgAccountNames": {
+      "type": "array",
+      "defaultValue": [ "mvnetonprems01", "mvnetonprems02", "mvnetonprems03" ],
+      "metadata": {
+        "description": "Storage account name"
+      }
+    },
+    "stgType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_GRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage type"
+      }
+    },
+    "onpremVnetNamePrefix": {
+      "type": "string",
+      "defaultValue": "onprem",
+      "metadata": {
+        "description": "On-premises VNet name"
+      }
+    },
+    "onpremVnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/16",
+      "metadata": {
+        "description": "On-premises VNet Address prefix"
+      }
+    },
+    "onpremSubnetNamePrefixes": {
+      "type": "array",
+      "defaultValue": [ "web", "internal", "connection" ],
+      "metadata": {
+        "description": "On-premises subnet name prefixes"
+      }
+    },
+    "onpremSubnetPrefixes": {
+      "type": "array",
+      "defaultValue": [ "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ],
+      "metadata": {
+        "description": "On-premises subnet prefixes"
+      }
+    },
+    "onpremGatewaySubnetPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.255.240/27",
+      "metadata": {
+        "description": "On-premises GatewaySubnet Prefix"
+      }
+    },
+    "onpremNVMs": {
+      "type": "array",
+      "defaultValue": [ 2, 2, 2 ]
+    },
+    "osType": {
+      "type": "string",
+      "defaultValue": "Windows",
+      "allowedValues": [
+        "Windows",
+        "Ubuntu"
+      ],
+      "metadata": {
+        "description": "Type of OS to use for VMs: Windows or Ubuntu."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Username for local admin account." }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Password for local admin account." }
+    },
+    "vpnType": {
+      "type": "string",
+      "metadata": {
+        "description": "Route based (Dynamic Gateway) or Policy based (Static Gateway)"
+      },
+      "defaultValue": "RouteBased",
+      "allowedValues": [
+        "RouteBased",
+        "PolicyBased"
+      ]
+    },
+    "uri": {
+      "type": "string"
+    },
+    "vnetTemplate": {
+      "type": "string"
+    },
+    "vmsTemplate": {
+      "type": "string"
+    },
+    "vmTemplate": { "type": "string" }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "numberSubnets": "[length(parameters('onpremSubnetNamePrefixes'))]"
+  },
+  "resources": [
+    {
+      "name": "onpremVnet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vnetTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vnetNamePrefix": { "value": "[parameters('onpremVnetNamePrefix')]" },
+          "vnetAddressPrefix": { "value": "[parameters('onpremVnetAddressPrefix')]" },
+          "subnetNamePrefixes": { "value": "[parameters('onpremSubnetNamePrefixes')]" },
+          "subnetPrefixes": { "value": "[parameters('onpremSubnetPrefixes')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('onpremGatewaySubnetPrefix')]" },
+          "vpnType": { "value": "[parameters('vpnType')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[concat(parameters('stgAccountNames')[copyindex()],'stg')]",
+      "location": "[variables('location')]",
+      "copy": {
+        "name": "stgCount",
+        "count": "[length(parameters('stgAccountNames'))]"
+      },
+      "tags": {
+        "displayName": "Storage Account"
+      },
+      "properties": {
+        "accountType": "[parameters('stgType')]"
+      }
+    },
+    {
+      "name": "[concat('vms',copyindex(),uniqueString(resourceGroup().id,deployment().name))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "[concat('Microsoft.Resources/deployments/','onpremVnet')]",
+        "[concat(parameters('stgAccountNames')[sub(variables('numberSubnets'),1)],'stg')]"
+      ],
+      "copy": {
+        "name": "vmCount",
+        "count": "[variables('numberSubnets')]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('uri'), '/', parameters('vmsTemplate'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "baseName": { "value": "[parameters('baseName')]" },
+          "vmNamePrefix": { "value": "[parameters('onpremSubnetNamePrefixes')[copyindex()]]" },
+          "snid": { "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/',reference('onpremVnet').outputs.vnetName.value,'/subnets/',parameters('baseName'),'-',parameters('onpremSubnetNamePrefixes')[copyindex()],'-sn')]" },
+          "stgAccountNames": { "value": "[parameters('stgAccountNames')]" },
+          "osType": { "value": "[parameters('osType')]" },
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "numberVMs": { "value": "[parameters('onpremNVMs')[copyindex()]]" },
+          "uri": { "value": "[parameters('uri')]" },
+          "vmTemplate": { "value": "[parameters('vmTemplate')]" }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "vnetName": {
+      "type": "string",
+      "value": "[reference('onpremVnet').outputs.vnetName.value]"
+    },
+    "gwPIP": {
+      "type": "string",
+      "value": "[reference('onpremVnet').outputs.gwPIP.value]"
+    },
+    "vpnResourceId": {
+      "type": "string",
+      "value": "[reference('onpremVnet').outputs.vpnResourceId.value]"
+    }
+  }
+}

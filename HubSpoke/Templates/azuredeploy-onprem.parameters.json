@@ -1,0 +1,23 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": { "value": "mvnet-onprem" },
+    "stgAccountNames": { "value": [ "mvnetonprems01", "mvnetonprems02", "mvnetonprems03" ] },
+    "stgType": { "value": "Premium_LRS" },
+    "onpremVnetNamePrefix": { "value": "dc" },
+    "onpremVnetAddressPrefix": { "value": "192.168.0.0/16" },
+    "onpremSubnetNamePrefixes": { "value": [ "web", "services", "connections" ] },
+    "onpremSubnetPrefixes": { "value": [ "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ] },
+    "onpremGatewaySubnetPrefix": { "value": "192.168.255.240/27" },
+    "onpremNVMs": { "value": [ 2, 2, 2 ] },
+    "osType": { "value": "Windows" },
+    "adminUsername": { "value": "adminUser" },
+    "adminPassword": { "value": "adminP@ssw0rd" },
+    "vpnType": { "value": "RouteBased" },
+    "uri": { "value": "https://raw.githubusercontent.com/telmosampaio/HubSpoke/master/HubSpoke/Templates" },
+    "vnetTemplate": { "value": "azuredeploy-vnet.json" },
+    "vmsTemplate": { "value": "azuredeploy-vms-1nic.json" },
+    "vmTemplate": { "value": "azuredeploy-vm-1nic.json" }
+  }
+}

@@ -35,6 +35,8 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <None Include="Templates\azuredeploy-hub.json" />
     <None Include="Templates\azuredeploy-hub.parameters.json" />
+    <None Include="Templates\azuredeploy-onprem.json" />
+    <None Include="Templates\azuredeploy-onprem.parameters.json" />
     <None Include="Templates\azuredeploy-spoke.json" />
     <None Include="Templates\azuredeploy-spoke.parameters.json" />
     <None Include="Templates\azuredeploy-vm-3nic.json" />
