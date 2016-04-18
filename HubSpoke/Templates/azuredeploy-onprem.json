@@ -65,7 +65,7 @@
     },
     "onpremNVMs": {
       "type": "array",
-      "defaultValue": [ 2, 2, 2 ]
+      "defaultValue": [ 1, 1, 1 ]
     },
     "osType": {
       "type": "string",
