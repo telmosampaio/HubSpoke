@@ -22,14 +22,14 @@
     },
     "subnetNamePrefixes": {
       "type": "array",
-      "defaultValue": [ "web", "data" ],
+      "defaultValue": [ "web", "data", "connection" ],
       "metadata": {
         "description": "Subnet name prefixes"
       }
     },
     "subnetPrefixes": {
       "type": "array",
-      "defaultValue": [ "192.168.1.0/24", "192.168.2.0/24" ],
+      "defaultValue": [ "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ],
       "metadata": {
         "description": "Subnet prefixes"
       }
