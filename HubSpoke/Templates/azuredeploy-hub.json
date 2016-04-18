@@ -243,7 +243,7 @@
       }
     },
     {
-      "name": "[concat('vm',copyindex(),uniqueString(resourceGroup().id,deployment().name))]",
+      "name": "[concat('vna',copyindex(),uniqueString(resourceGroup().id,deployment().name))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [

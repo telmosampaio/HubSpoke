@@ -214,19 +214,19 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vmNICName'),'-onprem-entry'))]",
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-onprem-entry','-nic'))]",
               "properties": {
                 "primary": false
               }
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vmNICName'),'-azure-entry'))]",
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-azure-entry','-nic'))]",
               "properties": {
                 "primary": false
               }
             },
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vmNICName'),'-mgmt'))]",
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('baseName'),'-',parameters('vmNamePrefix'),'-mgmt','-nic'))]",
               "properties": {
                 "primary": true
               }
