@@ -11,7 +11,7 @@
     "onpremSubnetPrefixes": { "value": [ "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24" ] },
     "onpremGatewaySubnetPrefix": { "value": "192.168.255.240/27" },
     "onpremNVMs": { "value": [ 2, 2, 2 ] },
-    "osType": { "value": "Windows" },
+    "osType": { "value": "Ubuntu" },
     "adminUsername": { "value": "adminUser" },
     "adminPassword": { "value": "adminP@ssw0rd" },
     "vpnType": { "value": "RouteBased" },
