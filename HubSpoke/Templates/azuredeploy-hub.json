@@ -99,25 +99,10 @@
     },
     "onpremLocation": {
       "type": "string",
-      "defaultValue": "East US 2",
+      "defaultValue": "Central US",
       "metadata": {
         "description": "Deployment location"
-      },
-      "allowedValues": [
-        "East US",
-        "East US 2",
-        "eastus2",
-        "East Asia",
-        "West US",
-        "West Europe",
-        "Southeast Asia",
-        "South Central US",
-        "East US 2",
-        "Japan East",
-        "Japan West",
-        "Central US",
-        "Brazil South"
-      ]
+      }
     },
     "onpremName": {
       "type": "string",
@@ -135,7 +120,7 @@
     },
     "onpremGWIP": {
       "type": "string",
-      "defaultValue": "40.84.60.99",
+      "defaultValue": "13.67.187.191",
       "metadata": {
         "description": "On-premises gateway public IP address"
       }

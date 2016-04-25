@@ -165,10 +165,6 @@
     "vpnResourceId": {
       "type": "string",
       "value": "[resourceId('Microsoft.Network/virtualNetworkGateways',variables('gatewayName'))]"
-    },
-    "vnetResourceId": {
-      "type": "string",
-      "value": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnetName'))]"
     }
   }
 }

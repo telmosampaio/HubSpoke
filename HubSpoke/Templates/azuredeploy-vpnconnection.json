@@ -6,42 +6,13 @@
       "type": "string",
       "metadata": {
         "description": "Deployment location"
-      },
-      "allowedValues": [
-        "East US",
-        "East US 2",
-        "eastus2",
-        "East Asia",
-        "West US",
-        "West Europe",
-        "Southeast Asia",
-        "South Central US",
-        "East US 2",
-        "Japan East",
-        "Japan West",
-        "Central US",
-        "Brazil South"
-      ]
+      }
     },
     "vnet2Location": {
       "type": "string",
       "metadata": {
         "description": "Deployment location"
-      },
-      "allowedValues": [
-        "East US",
-        "East US 2",
-        "East Asia",
-        "West US",
-        "West Europe",
-        "Southeast Asia",
-        "South Central US",
-        "East US 2",
-        "Japan East",
-        "Japan West",
-        "Central US",
-        "Brazil South"
-      ]
+      }
     },
     "baseName": {
       "type": "string",
